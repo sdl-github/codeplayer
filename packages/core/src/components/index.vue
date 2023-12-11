@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, computed, ref, onMounted } from 'vue';
+import { watch, computed, ref, onMounted, useSlots } from 'vue';
 import { store } from '@/store';
 import { atou } from '@/utils';
 import { getTemplate, File } from '@/compiler';
@@ -14,7 +14,8 @@ import Loading from './loading/index.vue';
 const props = defineProps<{ options?: CodePlayerOptions }>();
 
 const loaded = ref(false);
-
+const uSlots = useSlots()
+const toolBarSlot = computed(() => !!uSlots.toolbar);
 const CodeSlotName = computed(() => (store.reverse ? 'right' : 'left'));
 const PreviewSlotName = computed(() => (store.reverse ? 'left' : 'right'));
 
@@ -92,25 +93,18 @@ watch(
 
 <template>
   <div class="codeplayer-container">
-    <Toolbar />
+    <slot v-if="toolBarSlot" name="toolbar" />
+    <Toolbar v-else />
+
     <div class="main-content main-content-top">
-      <Splitter
-        min="140px"
-        max="300px"
-        initSplit="160px"
-        :showLeft="store.showFileBar"
-      >
+      <Splitter min="140px" max="300px" initSplit="160px" :showLeft="store.showFileBar">
         <template #left>
           <FileBar />
         </template>
         <template #right>
-          <Splitter
-            class="main-splitter"
-            min="0%"
-            max="100%"
+          <Splitter class="main-splitter" min="0%" max="100%"
             :showLeft="store.reverse ? store.showPreview : store.showCode"
-            :showRight="store.reverse ? store.showCode : store.showPreview"
-          >
+            :showRight="store.reverse ? store.showCode : store.showPreview">
             <template v-slot:[CodeSlotName]>
               <CodeEditor />
             </template>

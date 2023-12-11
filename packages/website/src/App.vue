@@ -1,14 +1,18 @@
 <template>
-  <CodePlayer :options="options" class="codeplayer-container"></CodePlayer>
+  <CodePlayer :options="options" class="codeplayer-container">
+  </CodePlayer>
 </template>
 
 <script setup lang="ts">
 // import CodePlayer, { CodePlayerOptions } from '../../core/src/index';
 import CodePlayer, { CodePlayerOptions } from '../../core';
+import { JsTemplate } from './templates/javascript'
 
 const options: CodePlayerOptions = {
-  appType: 'vue3',
-};
+  appType: 'js',
+  initFiles: JsTemplate
+}
+
 </script>
 
 <style scoped lang="less">
