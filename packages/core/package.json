@@ -1,6 +1,6 @@
 {
   "name": "@sdl-life/runcode",
-  "version": "0.3.2-prepatch",
+  "version": "0.3.3-prepatch",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "typings": "./types/index.d.ts",
