@@ -69,20 +69,20 @@ onMounted(() => {
 });
 
 // watch edit file
-watch(
-  () => [store.activeFile, store.files[store.activeFile]?.code],
-  (newV, oldV) => {
-    if (newV?.[0] !== oldV?.[0]) {
-      return;
-    }
-    if (store.activeFile === MapFile) {
-      renderSandbox();
-    } else {
-      refreshSandbox();
-    }
-  },
-  { deep: true }
-);
+// watch(
+//   () => [store.activeFile, store.files[store.activeFile]?.code],
+//   (newV, oldV) => {
+//     if (newV?.[0] !== oldV?.[0]) {
+//       return;
+//     }
+//     if (store.activeFile === MapFile) {
+//       renderSandbox();
+//     } else {
+//       refreshSandbox();
+//     }
+//   },
+//   { deep: true }
+// );
 
 // watch add a new file or delete a file
 watch(

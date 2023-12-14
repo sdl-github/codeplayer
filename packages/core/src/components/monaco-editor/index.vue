@@ -22,6 +22,7 @@ import { loadGrammars, loadTheme } from 'monaco-volar';
 import { store } from '@/store';
 import { getFileLanguage, getFileExtraName } from '@/compiler';
 import CopyIcon from '@/components/toolbar/icons/copy.vue';
+import { message } from '@/utils';
 
 const containerRef = ref<HTMLDivElement>();
 const ready = ref(false);
@@ -131,8 +132,10 @@ onMounted(async () => {
 
   await loadGrammars(monaco as any, editorInstance as any);
 
+  // save file
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-    // ignore save event
+    store.rerenderID ++
+    message('保存成功', { type: 'success' });
   });
 
   editorInstance.onDidChangeModelContent(() => {

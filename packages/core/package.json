@@ -1,6 +1,6 @@
 {
   "name": "@sdl-life/runcode",
-  "version": "0.3.1-prepatch",
+  "version": "0.3.2-prepatch",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "typings": "./types/index.d.ts",
@@ -52,6 +52,7 @@
     "monaco-volar": "^0.4.0",
     "onigasm": "^2.2.5",
     "path-browserify": "^1.0.1",
+    "prettier": "^3.1.1",
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.66.1",
     "sucrase": "^3.29.0",

@@ -89,6 +89,15 @@ watch(
     immediate: true,
   }
 );
+
+// 刷新渲染
+function refresh() {
+  store.rerenderID++;
+}
+
+defineExpose({
+  refresh,
+});
 </script>
 
 <template>
