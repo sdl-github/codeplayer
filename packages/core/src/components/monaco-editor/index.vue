@@ -14,15 +14,15 @@ import {
   nextTick,
   watch,
   computed,
-} from 'vue';
-import * as monaco from 'monaco-editor';
-import { initMonaco } from './env';
-import { getOrCreateModel } from './utils';
-import { loadGrammars, loadTheme } from 'monaco-volar';
-import { store } from '@/store';
-import { getFileLanguage, getFileExtraName } from '@/compiler';
-import CopyIcon from '@/components/toolbar/icons/copy.vue';
-import { message } from '@/utils';
+} from "vue";
+import * as monaco from "monaco-editor";
+import { initMonaco } from "./env";
+import { getOrCreateModel } from "./utils";
+import { loadGrammars, loadTheme } from "monaco-volar";
+import { store } from "@/store";
+import { getFileLanguage, getFileExtraName } from "@/compiler";
+import CopyIcon from "@/components/toolbar/icons/copy.vue";
+import { message } from "@/utils";
 
 const containerRef = ref<HTMLDivElement>();
 const ready = ref(false);
@@ -31,15 +31,15 @@ const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>();
 initMonaco(store);
 
 const lang = computed(() =>
-  ['css', 'less', 'sass', 'scss'].includes(getFileExtraName(store.activeFile))
-    ? 'css'
-    : 'javascript'
+  ["css", "less", "sass", "scss"].includes(getFileExtraName(store.activeFile))
+    ? "css"
+    : "javascript"
 );
 
 const tempJsModel = getOrCreateModel(
   monaco.Uri.parse(`file:///temp.js`),
-  'javascript',
-  'let temp = 1'
+  "javascript",
+  "let temp = 1"
 );
 
 onMounted(async () => {
@@ -48,11 +48,11 @@ onMounted(async () => {
   await nextTick();
 
   if (!containerRef.value) {
-    throw new Error('Cannot find containerRef');
+    throw new Error("Cannot find containerRef");
   }
 
   const editorInstance = monaco.editor.create(containerRef.value, {
-    value: store.files[store.activeFile]?.code || '',
+    value: store.files[store.activeFile]?.code || "",
     language: lang.value,
     fontSize: 13,
     theme: theme[store.theme],
@@ -64,7 +64,7 @@ onMounted(async () => {
     inlineSuggest: {
       enabled: false,
     },
-    'semanticHighlighting.enabled': true,
+    "semanticHighlighting.enabled": true,
     fixedOverflowWidgets: true,
   });
   editor.value = editorInstance;
@@ -76,15 +76,15 @@ onMounted(async () => {
     modifiers: string[],
     _language: string
   ) => {
-    const _readonly = modifiers.includes('readonly');
+    const _readonly = modifiers.includes("readonly");
     switch (type) {
-      case 'function':
-      case 'method':
+      case "function":
+      case "method":
         return { foreground: 12 };
-      case 'class':
+      case "class":
         return { foreground: 11 };
-      case 'variable':
-      case 'property':
+      case "variable":
+      case "property":
         return { foreground: _readonly ? 21 : 9 };
       default:
         return { foreground: 0 };
@@ -116,26 +116,45 @@ onMounted(async () => {
         editorInstance.focus();
       }
 
-      monaco.editor.setModelLanguage(model!, 'javascript');
+      monaco.editor.setModelLanguage(model!, "javascript");
       if (
-        ['.css', '.less', '.sass', '.scss'].includes(
+        [".css", ".less", ".sass", ".scss"].includes(
           getFileExtraName(store.activeFile)
         )
       ) {
         nextTick(() => {
-          monaco.editor.setModelLanguage(tempJsModel!, 'css');
+          monaco.editor.setModelLanguage(tempJsModel!, "css");
         });
       }
     },
     { immediate: true }
   );
 
+  // watch edit file
+  watch(
+    () => [store.activeFile, store.files[store.activeFile]?.code],
+    (newV, oldV) => {
+      if (newV?.[0] !== oldV?.[0]) {
+        return;
+      }
+      console.log('watch edit file');
+      store.tempFileNames = store.tempFileNames.add(store.activeFile)
+    },
+    { deep: true }
+  );
+
   await loadGrammars(monaco as any, editorInstance as any);
 
   // save file
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-    store.rerenderID ++
-    message('保存成功', { type: 'success' });
+    editorInstance
+      .getAction("editor.action.formatDocument")
+      ?.run()
+      .then(() => {
+        message("保存成功", { type: "success" });
+        store.rerenderID++;
+        store.tempFileNames.clear()
+      });
   });
 
   editorInstance.onDidChangeModelContent(() => {
@@ -160,7 +179,7 @@ onMounted(async () => {
     () => store.theme,
     (n) => {
       editorInstance.updateOptions({
-        theme: n === 'light' ? theme.light : theme.dark,
+        theme: n === "light" ? theme.light : theme.dark,
       });
     },
     { immediate: true }
@@ -173,7 +192,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="less">
-@import '@/style/base.less';
+@import "@/style/base.less";
 .codeplayer-monaco-edito-outer {
   position: relative;
   height: 100%;

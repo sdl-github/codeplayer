@@ -10,6 +10,14 @@ import { Store } from '@/store';
 import type { CreateData } from './vue.worker';
 import vueWorker from './vue.worker?worker';
 import { getFileLanguage } from '@/compiler';
+import prettier from 'prettier/standalone'
+import prettierPluginBabel from 'prettier/plugins/babel'
+import prettierPluginEstree from 'prettier/plugins/estree'
+import prettierPluginHtml from 'prettier/plugins/html'
+import prettierPluginTypescript from 'prettier/plugins/typescript'
+import prettierPluginPostcss from 'prettier/plugins/postcss'
+import prettierPluginYaml from 'prettier/plugins/yaml'
+
 
 let initted = false;
 
@@ -203,4 +211,54 @@ export function loadMonacoEnv(store: Store) {
 
   store.reloadLanguageTools = () => reloadLanguageTools(store);
   languages.onLanguage('vue', () => store.reloadLanguageTools!());
+
+  languages.registerDocumentFormattingEditProvider({ language: '*', exclusive: true }, {
+    async provideDocumentFormattingEdits(model, options, token) {
+
+      const language = getFileLanguage(store.activeFile)
+      const parser = getPrettierParser(language)
+      
+      const prettierCode = await prettier.format(model.getValue(), {
+        parser,
+        plugins: [
+          prettierPluginEstree,
+          prettierPluginBabel,
+          prettierPluginHtml,
+          prettierPluginTypescript,
+          prettierPluginPostcss,
+          prettierPluginYaml
+        ]
+      })
+      return [{
+        text: prettierCode,
+        range: model.getFullModelRange(),
+      }]
+    },
+  })
+}
+
+
+function getPrettierParser(language: string) {
+  if (language === 'vue') {
+    return 'vue'
+  }
+  if (language === 'javascript') {
+    return 'babel'
+  }
+  if (language === 'typescript') {
+    return 'typescript'
+  }
+  if (language === 'css') {
+    return 'css'
+  }
+  if (['yml','yaml'].includes(language)) {
+    return 'yaml'
+  }
+  if (language === 'html') {
+    return 'html'
+  }
+  if (language === 'json') {
+    return 'json'
+  }
+  return 'babel'
 }

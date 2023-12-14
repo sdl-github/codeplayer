@@ -10,34 +10,39 @@ const indexHtml = `
     <title>CodePlayer</title>
   </head>
   <body>
+    <div id="app">JavaScript Template</div>
   </body>
   <script type="module">
     import './index.js';
+    import './index.css';
   </script>
 </html>
 `.trim();
 
 const indexJs = `
-import layui from "layui";
-import "layui/dist/css/layui.css";
-
-layer.open({
-  type: 1, // page 层类型
-  area: ['500px', '300px'],
-  title: 'Hello layer',
-  shade: 0.6, // 遮罩透明度
-  shadeClose: true, // 点击遮罩区域，关闭弹层
-  maxmin: true, // 允许全屏最小化
-  anim: 0, // 0-6 的动画形式，-1 不开启
-  content: '<div style="padding: 32px;">一个普通的页面层，传入了自定义的 HTML</div>'
-});
+const app = document.getElementById('app');
+app.innerText = 'Hello JavaScript Template';
 `.trim();
 
+
+const indexCss = `
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 200px;
+}
+`.trim();
 const importMap = `
 {
   "imports": {
-    "layui": "https://esm.sh/layui@2.8.16",
-    "layui/": "https://esm.sh/layui@2.8.16/"
+
   }
 }
 `.trim();
@@ -45,5 +50,6 @@ const importMap = `
 export const JsTemplate = {
   'index.html': indexHtml,
   'index.js': indexJs,
+  'index.css': indexCss,
   [MapFile]: importMap,
 };

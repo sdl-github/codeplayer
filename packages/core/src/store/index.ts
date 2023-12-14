@@ -8,6 +8,7 @@ export type Theme = 'light' | 'dark';
 export interface Store {
   entry: string;
   activeFile: string;
+  tempFileNames: Set<string>;
   files: Record<string, File>;
   showFileBar: boolean;
   showCode: boolean;
@@ -32,6 +33,7 @@ const params = new URLSearchParams(location.search);
 export const store = reactive<Store>({
   // 文件系统相关
   entry: decodeURIComponent(params.get('params') || 'index.html'),
+  tempFileNames: new Set(),
   files: {},
   activeFile: decodeURIComponent(params.get('activeFile') || ''),
   showFileBar: params.get('showFileBar') !== 'false',

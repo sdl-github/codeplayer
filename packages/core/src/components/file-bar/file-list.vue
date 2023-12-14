@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { store } from '@/store';
 import { MapFile } from '@/constant';
 import FileInput from './file-input.vue';
@@ -74,6 +74,7 @@ const getIcon = (filename: string) => {
     return DefaultFileSVG;
   }
 };
+
 </script>
 
 <template>
@@ -103,6 +104,7 @@ const getIcon = (filename: string) => {
         <div class="file-right" v-if="filename !== MapFile">
           <RenameFile @click="() => emit('handleClickRename', filename)" />
           <DeleteFile :filename="filename" />
+          <div v-if="store.tempFileNames.has(filename)" class="temp-file-point"></div>
           <!-- <HomeFile :filename="filename" /> -->
         </div>
       </div>
@@ -154,6 +156,13 @@ const getIcon = (filename: string) => {
       color: var(--codeplayer-text-secondary);
       .file-option-button {
         display: none;
+      }
+      .temp-file-point {
+        width: 6px;
+        height: 6px;
+        background: #000;
+        border-radius: 50%;
+        margin:0 5px;
       }
     }
     &:hover {
